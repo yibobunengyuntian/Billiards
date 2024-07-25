@@ -10,6 +10,8 @@ class Cushion: public ItemBase
 public:
     Cushion();
     ~Cushion();
+
+    //与球的碰撞处理（包括进球）返回true表示进球
     bool collisionWithBall(Ball *ball, float fps);
 public:
     QRectF boundingRect() const override;

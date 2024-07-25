@@ -106,33 +106,49 @@ void Ball::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
+
+    //抗锯齿
     painter->setRenderHint(QPainter::Antialiasing,true);
+
+    //不绘制轮廓线
     painter->setPen(Qt::NoPen);
+
+
     QColor color(Qt::black);
     color.setAlpha(90);
     painter->setBrush(color);
+    //先绘制阴影部分
     painter->drawEllipse(-7, -7, 2*m_r, 2*m_r);
 
+    //此操作可以使绘制效果为圆形渐变（表现出光照效果）
     QRadialGradient gradient(-3.0/10*m_r, -3.0/10*m_r, m_r/2);
     gradient.setColorAt(0, QColor(Qt::white).light(200));
     gradient.setColorAt(1, m_color);
     painter->setBrush(gradient);
 
-//    painter->setPen(QPen(Qt::black, 0));
+    //绘制球体
     painter->drawEllipse(-m_r, -m_r, 2*m_r, 2*m_r);
 }
 
 void Ball::move(float fps)
 {
+    //fps有时会计算错误则跳过
     if(isnan(fps))
+    {
         return;
+    }
     if(m_speed < 1e-6)
     {
         m_speed = 0;
     }
+
+    //速度>0， 则移动
     if(m_speed > 0)
     {
+        //所谓移动，就是根据：速度、方向、帧率不断设置球的位置
         setPos(pos() + m_speed/fps*m_moveDir.normalized().toPointF());
+
+        //随意写的一个减速规则
         m_lossSpeed = (m_speed > 200)?0.4*m_speed:40;
         m_speed -= m_lossSpeed/fps;
     }

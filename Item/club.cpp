@@ -50,14 +50,13 @@ float Club::length()
 
 QRectF Club::boundingRect() const
 {
-    return QRectF(QPointF(0, 0), (-m_dir*m_length).toPointF());
+    QPainterPath path = m_headPath + m_polePath + m_gripPath;
+    return path.boundingRect();
 }
 
 QPainterPath Club::shape() const
 {
-    QPainterPath path;
-//    path.set
-//    path.addRect(-m_outRect.x()/2.6/2, -m_outRect.y()/2.6/2, m_outRect.x()/2.6, m_outRect.y()/2.6);
+    QPainterPath path = m_headPath + m_polePath + m_gripPath;
     return path;
 }
 

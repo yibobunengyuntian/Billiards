@@ -28,7 +28,7 @@ FORMS += \
     mainwin.ui
 
 include(Item/Item.pri)
-include(Canvas/Canvas.pri)
+include(GraphicsView/GraphicsView.pri)
 include(Operator/Operator.pri)
 include(UndoCommand/UndoCommand.pri)
 

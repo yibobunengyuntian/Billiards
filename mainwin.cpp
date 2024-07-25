@@ -2,7 +2,7 @@
 #include "ui_mainwin.h"
 
 #include <QtMath>
-#include "gcanvasdefualtoperator.h"
+#include "defualtoperator.h"
 #include "cushion.h"
 #include "club.h"
 
@@ -36,10 +36,10 @@ void MainWin::initialzed()
     {
         m_redBalls.append(new Ball(Ball::red));
     }
-    static_cast<GCanvasDefualtOperator*>(m_pGraphicsView->operatorObj().get())->setWhiteBall(m_pWhite);
-    static_cast<GCanvasDefualtOperator*>(m_pGraphicsView->operatorObj().get())->setCushion(m_pCushion);
-    static_cast<GCanvasDefualtOperator*>(m_pGraphicsView->operatorObj().get())->setClub(m_pClub);
-    rst();
+    static_cast<DefualtOperator*>(m_pGraphicsView->operatorObj().get())->setWhiteBall(m_pWhite);
+    static_cast<DefualtOperator*>(m_pGraphicsView->operatorObj().get())->setCushion(m_pCushion);
+    static_cast<DefualtOperator*>(m_pGraphicsView->operatorObj().get())->setClub(m_pClub);
+
     m_pBtnRst = new QPushButton("重置", m_pGraphicsView);
     m_pBtnRst->setFixedSize(100, 30);
     connect(m_pBtnRst, SIGNAL(clicked(bool)), this, SLOT(rst()));
@@ -47,16 +47,19 @@ void MainWin::initialzed()
     m_pBtnUndo = new QPushButton("回退", m_pGraphicsView);
     m_pBtnUndo->setFixedSize(100, 30);
     m_pBtnUndo->move(m_pBtnRst->pos() + QPoint(m_pBtnRst->width(), 0));
-    connect(m_pBtnUndo, SIGNAL(clicked(bool)), static_cast<GCanvasDefualtOperator*>(m_pGraphicsView->operatorObj().get()), SLOT(onUndo()));
+    connect(m_pBtnUndo, SIGNAL(clicked(bool)), static_cast<DefualtOperator*>(m_pGraphicsView->operatorObj().get()), SLOT(onUndo()));
 
     m_pBtnRedo = new QPushButton("恢复", m_pGraphicsView);
     m_pBtnRedo->setFixedSize(100, 30);
     m_pBtnRedo->move(m_pBtnUndo->pos() + QPoint(m_pBtnUndo->width(), 0));
-    connect(m_pBtnRedo, SIGNAL(clicked(bool)), static_cast<GCanvasDefualtOperator*>(m_pGraphicsView->operatorObj().get()), SLOT(onRedo()));
+    connect(m_pBtnRedo, SIGNAL(clicked(bool)), static_cast<DefualtOperator*>(m_pGraphicsView->operatorObj().get()), SLOT(onRedo()));
+
+    rst();
 }
 
 bool MainWin::event(QEvent *event)
 {
+    //根据窗口大小变化调整缩放， 使图元始终保持在窗口中
     static float scale = 1;
     if(event->type() == QEvent::Resize)
     {
@@ -79,10 +82,12 @@ bool MainWin::event(QEvent *event)
 
 void MainWin::rst()
 {
+    //规则：初始状态没有白球， 需要自己放置在半圆形区域
     if(m_pGraphicsView->scene()->items().contains(m_pWhite))
     {
         m_pGraphicsView->scene()->removeItem(m_pWhite);
     }
+    //根据规则设置彩球摆放位置
     m_pBlack->setPos(-m_pCushion->m_inRect.x()/2.6/2 + 324/2.6, 0);
     m_pBlack->setSpeed(0);
     m_pPink->setPos(-m_pCushion->m_inRect.x()/2.6/2/2, 0);
@@ -97,7 +102,9 @@ void MainWin::rst()
     m_pGreen->setSpeed(0);
     m_pWhite->setSpeed(0);
 
+    //15个红球可以先确定第一个球（粉球旁边）的位置， 然后通过计算得出其余球位置
     float baseX = -m_pCushion->m_inRect.x()/2.6/2/2 - m_pBlack->r()*2 - 20/2.6;
+    float d = m_pBlack->r()*2;
     for(int i = 0; i < 15; ++i)
     {
         float x = 0;
@@ -110,28 +117,29 @@ void MainWin::rst()
         else if(i < 3)
         {
             x = baseX - m_pBlack->r()*qPow(3, 0.5);
-            y = 0 + (i - 1.5)*20;
+            y = 0 + (i - 1.5)*d;
         }
         else if(i < 6)
         {
             x = baseX - m_pBlack->r()*qPow(3, 0.5)*2;
-            y = 0 + (i - 4)*20;
+            y = 0 + (i - 4)*d;
         }
         else if(i < 10)
         {
             x = baseX - m_pBlack->r()*qPow(3, 0.5)*3;
-            y = 0 + (i - 7.5)*20;
+            y = 0 + (i - 7.5)*d;
         }
         else
         {
             x = baseX - m_pBlack->r()*qPow(3, 0.5)*4;
-            y = 0 + (i - 12)*20;
+            y = 0 + (i - 12)*d;
         }
         m_redBalls[i]->setPos(x, y);
         m_redBalls[i]->setSpeed(0);
         m_redBalls[i]->setZValue(QVector2D(m_redBalls[i]->pos()).distanceToLine(QVector2D(-10000, -10000), QVector2D(1, 1)));
         ADDITEM(m_redBalls[i]);
     }
+    //ZValue值大的， 绘制在上层
     m_pClub->setZValue(20000);
     m_pClub->setDir(QVector2D(-1, 0));
     m_pClub->setPos(-m_pClub->length()/2.6/2, m_pCushion->m_outRect.y()/2.6/2 + 100/2.6);
@@ -142,6 +150,6 @@ void MainWin::rst()
     ADDITEM(m_pCoffee);
     ADDITEM(m_pGreen);
     ADDITEM(m_pClub);
-    static_cast<GCanvasDefualtOperator*>(m_pGraphicsView->operatorObj().get())->start();
+    static_cast<DefualtOperator*>(m_pGraphicsView->operatorObj().get())->start();
 }
 

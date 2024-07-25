@@ -36,15 +36,15 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="GCanvasView" name="m_pGraphicsView"/>
+    <widget class="GraphicsView" name="m_pGraphicsView"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GCanvasView</class>
+   <class>GraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header>gcanvasview.h</header>
+   <header>graphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
