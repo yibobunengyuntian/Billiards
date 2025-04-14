@@ -1,4 +1,4 @@
-## 项目作品：[https://blog.csdn.net/yiboyuntian_qt/article/details/140715702](https://blog.csdn.net/yiboyuntian_qt/article/details/140702774)
+## 项目作品：[https://blog.csdn.net/yiboyuntian_qt/article/details/140702774](https://blog.csdn.net/yiboyuntian_qt/article/details/140702774?spm=1001.2014.3001.5501)
 
 
 
@@ -8,7 +8,7 @@
 
 ## 项目介绍：
 
-在qt中使用opengl， QOpenGLWidget；仿游戏引擎的场景编辑器， 导入外部模型文件， 界面交互， 点击选中模型， 移动、旋转、缩放；材质编辑， 灯光， 摄像机；opengl实战练习。
+qt c++ 编写台球游戏， 使用QGraphicsView QGraphicsScene QGraphicsItem ，掌握qt图形视图框架。
 
 ## 效果图：
 
