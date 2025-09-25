@@ -12,4 +12,4 @@ qt c++ 编写台球游戏， 使用QGraphicsView QGraphicsScene QGraphicsItem �
 
 ## 效果图：
 
-![](效果图/1.gif)
+![](https://i-blog.csdnimg.cn/direct/d7dea6322ec244489b9a927bfaa12ccd.gif)
